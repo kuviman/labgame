@@ -1,3 +1,7 @@
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(2, GPIO.OUT)
+GPIO.output(2, True)
 import pygame
 from pygame.locals import *
 from random import *
@@ -221,6 +225,7 @@ def main():
 					elif col == "finish":
 						genWalls(5)
 						win = True
+						GPIO.output(2, False)
 		dt = clock.tick() / 1000
 
 		lab.render(screen)
@@ -248,3 +253,4 @@ def main():
 if __name__ == "__main__":
 	main()
 
+GPIO.cleanup()
