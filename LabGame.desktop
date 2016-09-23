@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Lab Game
+Comment=SuperLabGame
+Exec=python3 /home/pi/labgame/game.py
+Icon=/usr/share/pixmaps/python.xpm
+Terminal=false
+Type=Application
+Categories=Application;Game;
+StartupNotify=true
