@@ -10,7 +10,7 @@ screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN)
 font = pygame.font.SysFont(pygame.font.get_default_font(), 32)
 clock = pygame.time.Clock()
 
-size = 16
+size = 8
 
 labImage = pygame.Surface(SCREEN_SIZE)
 
@@ -53,8 +53,12 @@ while True:
         down[d[1][0]][d[1][1]] = True
 
 def transform(x, y):
-    return (SCREEN_SIZE[0] / 2 + (x - size / 2) * scale,
-            SCREEN_SIZE[1] / 2 + (y - size / 2) * scale)
+    return (int(SCREEN_SIZE[0] / 2 + (x - size / 2) * scale),
+            int(SCREEN_SIZE[1] / 2 + (y - size / 2) * scale))
+
+def transformBack(x, y):
+    return (size / 2 + (x - SCREEN_SIZE[0] / 2) / scale,
+            size / 2 + (y - SCREEN_SIZE[1] / 2) / scale)
 
 def line(screen, x1, y1, x2, y2):
     x1, y1 = transform(x1, y1)
@@ -69,8 +73,9 @@ for i in range(size + 1):
         if ((j == 0 or j == size) and i < size) or (i < size and not left[i][j]):
             line(labImage, i, j, i + 1, j)
 
-def render():
-    screen.blit(labImage, (0, 0))
+player = (0, 0)
+pygame.mouse.set_visible(False)
+pygame.mouse.set_pos(transform(*player))
 
 running = True
 while running:
@@ -80,8 +85,13 @@ while running:
         elif e.type == KEYDOWN:
             if e.key == K_ESCAPE:
                 running = False
+        elif e.type == MOUSEMOTION:
+            player = transformBack(*e.pos)
     dt = clock.tick()
-    render()
+
+    screen.blit(labImage, (0, 0))
+    pygame.draw.circle(screen, (255, 0, 0), transform(*player), int(scale / 10))
+
     screen.blit(font.render("FPS: " + str(int(clock.get_fps())), True, (255, 255, 255)), (0, 0))
     pygame.display.flip()
 
