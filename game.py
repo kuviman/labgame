@@ -58,8 +58,28 @@ class Lab:
 
         self.image = pygame.Surface(SCREEN_SIZE)
         self.image.fill((0, 0, 0))
-        lineColor = (255, 255, 255)
-        lineWidth = 2
+
+        backLines = 100
+        for i in range(backLines):
+            x = -self.size + self.size * 3 * i / backLines
+            pygame.draw.aaline(self.image, (30, 30, 100), transform(x, -self.size), transform(x + self.size, 2 * self.size))
+            pygame.draw.aaline(self.image, (30, 30, 100), transform(x, -self.size), transform(x - self.size, 2 * self.size))
+
+        self.drawLab((0, 0, 255), 7)
+        self.drawLab((100, 100, 255), 5)
+        self.drawLab((255, 255, 255), 2)
+        self.drawExits((255, 100, 100), 7)
+        self.drawExits((255, 0, 0), 3)
+
+    def drawExits(self, exitColor, exitWidth):
+        pygame.draw.line(self.image, exitColor,
+                         transform(0, self.size - 1), transform(0, self.size),
+                         exitWidth)
+        pygame.draw.line(self.image, exitColor,
+                         transform(self.size, 0), transform(self.size, 1),
+                         exitWidth)
+
+    def drawLab(self, lineColor, lineWidth):
         for i in range(self.size + 1):
             for j in range(self.size + 1):
                 if self.wallLeft(i, j):
@@ -70,14 +90,11 @@ class Lab:
                     pygame.draw.line(self.image, lineColor,
                                      transform(i, j), transform(i + 1, j),
                                      lineWidth)
-        exitColor = (255, 0, 0)
-        exitWidth = 5
-        pygame.draw.line(self.image, exitColor,
-                         transform(0, self.size - 1), transform(0, self.size),
-                         exitWidth)
-        pygame.draw.line(self.image, exitColor,
-                         transform(self.size, 0), transform(self.size, 1),
-                         exitWidth)
+        if lineWidth < 4:
+            return
+        for i in range(self.size + 1):
+            for j in range(self.size + 1):
+                pygame.draw.circle(self.image, lineColor, transform(i, j), lineWidth // 2)
 
     def wallLeft(self, i, j):
         return ((i == 0 or i == self.size) and j < self.size) or (j < self.size and not self.left[i][j])
@@ -128,7 +145,8 @@ class Player:
         self.x, self.y = 0.1, Lab.size - 0.5
         self.alive = True
     def render(self, screen):
-        pygame.draw.circle(screen, (255, 0, 0), transform(self.x, self.y), int(Lab.scale / 10))
+        pygame.draw.circle(screen, (0, 100, 0), transform(self.x, self.y), int(Lab.scale / 10))
+        pygame.draw.circle(screen, (0, 255, 0), transform(self.x, self.y), int(Lab.scale / 20))
 
 def main():
     screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN)
