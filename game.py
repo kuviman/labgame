@@ -11,6 +11,9 @@ font = pygame.font.SysFont(pygame.font.get_default_font(), 32)
 clock = pygame.time.Clock()
 
 size = 16
+
+labImage = pygame.Surface(SCREEN_SIZE)
+
 dsu = []
 left = []
 down = []
@@ -53,19 +56,21 @@ def transform(x, y):
     return (SCREEN_SIZE[0] / 2 + (x - size / 2) * scale,
             SCREEN_SIZE[1] / 2 + (y - size / 2) * scale)
 
-def line(x1, y1, x2, y2):
+def line(screen, x1, y1, x2, y2):
     x1, y1 = transform(x1, y1)
     x2, y2 = transform(x2, y2)
-    pygame.draw.line(screen, (0, 0, 0), (x1, y1), (x2, y2), 2)
+    pygame.draw.line(screen, (255, 255, 255), (x1, y1), (x2, y2), 2)
+
+labImage.fill((0, 0, 0))
+for i in range(size + 1):
+    for j in range(size + 1):
+        if ((i == 0 or i == size) and j < size) or (j < size and not down[i][j]):
+            line(labImage, i, j, i, j + 1)
+        if ((j == 0 or j == size) and i < size) or (i < size and not left[i][j]):
+            line(labImage, i, j, i + 1, j)
 
 def render():
-    screen.fill((200, 200, 255))
-    for i in range(size + 1):
-        for j in range(size + 1):
-            if ((i == 0 or i == size) and j < size) or (j < size and not down[i][j]):
-                line(i, j, i, j + 1)
-            if ((j == 0 or j == size) and i < size) or (i < size and not left[i][j]):
-                line(i, j, i + 1, j)
+    screen.blit(labImage, (0, 0))
 
 running = True
 while running:
@@ -77,7 +82,7 @@ while running:
                 running = False
     dt = clock.tick()
     render()
-    screen.blit(font.render("FPS: " + str(int(clock.get_fps())), True, (0, 0, 0)), (0, 0))
+    screen.blit(font.render("FPS: " + str(int(clock.get_fps())), True, (255, 255, 255)), (0, 0))
     pygame.display.flip()
 
 
